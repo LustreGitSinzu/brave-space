@@ -284,7 +284,7 @@
       </div>
 
       <div>
-        <form id="signup">
+        <form id="signup" method="POST">
           <div class="field">
             <label for="name">Full name</label>
             <input type="text" id="name" name="name" placeholder="Your name" required />
@@ -481,4 +481,67 @@ form.addEventListener('submit', async (e)=>{
 });
 </script>
 </body>
+
+  <?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Email recipients
+    $to = "simonusman55@gmail.com, admin@example.com"; // multiple emails separated by commas
+
+    $subject = "Member Registration";
+
+    // Get form values
+    $name      = htmlspecialchars($_POST['name']);
+    $email     = htmlspecialchars($_POST['email']);
+    $whatsapp  = htmlspecialchars($_POST['whatsapp']);
+    $city      = htmlspecialchars($_POST['city']);
+    $skills    = htmlspecialchars($_POST['skills']);
+    $oneline   = htmlspecialchars($_POST['oneline']);
+
+    // Intent
+    $intent = $_POST['intent'] ?? '';
+
+    // Sectors (multiple selections)
+    if(isset($_POST['sectors'])){
+        $sectors = implode(", ", $_POST['sectors']);
+    }else{
+        $sectors = "None";
+    }
+
+    $message = "
+    New Registration
+
+    Full Name: $name
+
+    Email: $email
+
+    WhatsApp: $whatsapp
+
+    City: $city
+
+    Intent:
+    $intent
+
+    Sectors:
+    $sectors
+
+    Skills:
+    $skills
+
+    Idea:
+    $oneline
+    ";
+
+    $headers  = "From: noreply@yourdomain.com\r\n";
+    $headers .= "Reply-To: $email\r\n";
+
+    if(mail($to, $subject, $message, $headers)){
+        echo "success";
+    }else{
+        echo "failed";
+    }
+}
+
+?>
 </html>
