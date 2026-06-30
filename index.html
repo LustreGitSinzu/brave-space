@@ -50,7 +50,7 @@
   }
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
   .brand{display:flex;align-items:center;gap:10px;color:var(--cream);font-family:"Bricolage Grotesque";font-weight:800;font-size:1.18rem;letter-spacing:-.01em}
-  .brand .dot{width:13px;height:13px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(232,163,61,.18)}
+  .brand img{height:40px;width:auto}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     font-family:"Bricolage Grotesque";font-weight:700;font-size:.95rem;
@@ -79,7 +79,7 @@
   .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
   .hero-meta{margin-top:30px;display:flex;align-items:center;gap:12px;color:var(--cream-dim);font-size:.92rem}
   .avatars{display:flex}
-  .avatars span{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);margin-left:-9px;font-family:"Bricolage Grotesque";font-weight:700;font-size:.72rem;display:grid;place-items:center;color:var(--ink)}
+  .avatars span{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);margin-left:-9px;font-family:"Bricolage Grotesque";font-weight:700;font-size:.72rem;display:grid;place-items:center}
   .avatars span:first-child{margin-left:0}
 
   .reveal{opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
@@ -197,7 +197,7 @@
 
 <nav>
   <div class="wrap nav-inner">
-    <div class="brand"><span class="dot"></span>Brave Space</div>
+    <a href="#" class="brand"><img src="brave-logo.png" alt="Brave Space Logo" /></a>
     <a href="#join" class="btn btn-amber">Claim your spot</a>
   </div>
 </nav>
@@ -225,7 +225,7 @@
 
 <div class="why">
   <div class="wrap">
-    <p>Across Africa, brilliant ideas die early — not from lack of talent, but from lack of <span class="accent">people</span>. No trusted collaborators. No team. Nowhere safe to share an idea. Brave Space fixes the people problem.</p>
+    <p>Across Africa, brilliant ideas die early — not from lack of talent, but from lack of <span class="accent">people</span>. No trusted collaborators. No team. Nowhere safe to share an idea. Brave Space changes that. We connect African builders with collaborators who actually fit — by skill, sector, and ambition — so you can stop going it alone and start building together.</p>
   </div>
 </div>
 
@@ -481,67 +481,4 @@ form.addEventListener('submit', async (e)=>{
 });
 </script>
 </body>
-
-  <?php
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // Email recipients
-    $to = "simonusman55@gmail.com, admin@example.com"; // multiple emails separated by commas
-
-    $subject = "Member Registration";
-
-    // Get form values
-    $name      = htmlspecialchars($_POST['name']);
-    $email     = htmlspecialchars($_POST['email']);
-    $whatsapp  = htmlspecialchars($_POST['whatsapp']);
-    $city      = htmlspecialchars($_POST['city']);
-    $skills    = htmlspecialchars($_POST['skills']);
-    $oneline   = htmlspecialchars($_POST['oneline']);
-
-    // Intent
-    $intent = $_POST['intent'] ?? '';
-
-    // Sectors (multiple selections)
-    if(isset($_POST['sectors'])){
-        $sectors = implode(", ", $_POST['sectors']);
-    }else{
-        $sectors = "None";
-    }
-
-    $message = "
-    New Registration
-
-    Full Name: $name
-
-    Email: $email
-
-    WhatsApp: $whatsapp
-
-    City: $city
-
-    Intent:
-    $intent
-
-    Sectors:
-    $sectors
-
-    Skills:
-    $skills
-
-    Idea:
-    $oneline
-    ";
-
-    $headers  = "From: noreply@yourdomain.com\r\n";
-    $headers .= "Reply-To: $email\r\n";
-
-    if(mail($to, $subject, $message, $headers)){
-        echo "success";
-    }else{
-        echo "failed";
-    }
-}
-
-?>
 </html>
