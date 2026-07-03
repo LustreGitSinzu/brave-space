@@ -307,7 +307,7 @@
           <div class="field">
             <label>I'm here to…</label>
             <div class="choice" id="intent" data-single="true">
-              <input type="hidden" name="intent" id="intent">
+              <input type="hidden" name="intent" id="intentInput">
               <span class="chip" data-val="Build my own idea">Build my own idea</span>
               <span class="chip" data-val="Join someone's idea">Join someone's idea</span>
               <span class="chip" data-val="Both">Both</span>
@@ -461,47 +461,21 @@ setupChips('sectors', false);
    Paste your Formspree endpoint below, e.g.
    "https://formspree.io/f/abcdwxyz". Leave "" to just demo.
    ========================================================= */
-// const FORM_ENDPOINT = "";
-
-// const form=document.getElementById('signup');
-// let founding = 17;
-// form.addEventListener('submit', async (e)=>{
-//   e.preventDefault();
-//   const get=id=>document.getElementById(id).value.trim();
-//   const sel=id=>[...document.getElementById(id).querySelectorAll('.chip.sel')].map(c=>c.dataset.val);
-//   const data={
-//     name:get('name'), email:get('email'), whatsapp:get('whatsapp'), city:get('city'),
-//     intent:sel('intent')[0]||'', sectors:sel('sectors').join(', '),
-//     skills:get('skills'), idea:get('oneline')
-//   };
-//   if(FORM_ENDPOINT){
-//     try{ await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}); }
-//     catch(err){ /* show success anyway so the user isn't blocked */ }
-//   } else {
-//     console.log('Signup captured (demo mode):', data);
-//   }
-//   founding++;
-//   document.getElementById('successmsg').textContent =
-//     `You're founding member #0${founding}. We'll reach out on WhatsApp or email as we open the doors.`;
-//   form.style.display='none';
-//   document.getElementById('success').classList.add('show');
-//   document.getElementById('success').scrollIntoView({behavior:'smooth',block:'center'});
-
-  const form = document.getElementById("signup");
+const form = document.getElementById("signup");
 
 form.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
     const data = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        whatsapp: document.getElementById("whatsapp").value,
-        city: document.getElementById("city").value,
-        intent: document.getElementById("intent").value,
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        whatsapp: document.getElementById("whatsapp").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        intent: document.getElementById("intentInput").value,
         sectors: document.getElementById("sector").value,
-        skills: document.getElementById("skills").value,
-        oneline: document.getElementById("oneline").value
+        skills: document.getElementById("skills").value.trim(),
+        oneline: document.getElementById("oneline").value.trim()
     };
 
     try {
@@ -517,47 +491,28 @@ form.addEventListener("submit", async (e) => {
             }
         );
 
-        const result = await response.json();
-
-        if(result.success){
-
-            alert("Registration successful!");
+        if (response.ok) {
 
             form.reset();
 
+            form.style.display = "none";
+
+            document.getElementById("success")
+                .classList.add("show");
+
         }
 
-    } catch(error){
+    } catch (err) {
 
-        alert("Something went wrong.");
+        console.error(err);
 
-        console.error(error);
+        alert("Unable to submit. Please try again.");
 
     }
 
 });
-
-const chips = document.querySelectorAll("#intent .chip");
-
-const hidden = document.getElementById("intent");
-
-chips.forEach(chip => {
-
-    chip.addEventListener("click", () => {
-
-        chips.forEach(c => c.classList.remove("active"));
-
-        chip.classList.add("active");
-
-        hidden.value = chip.dataset.val;
-
-    });
-
-});
-document.getElementById("sector").value =
-selectedSectors.join(", ");
   
-});
+
 </script>
 </body>
 </html>
