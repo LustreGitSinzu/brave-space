@@ -285,28 +285,29 @@
       </div>
 
       <div>
-        <form id="signup" method="POST" action="https://docs.google.com/forms/d/e/1FAIpQLSeU8EDPcKS86IZyGPBQ1LMGsPtC6pLxZHTPiDPx99Ein0WZwA/formResponse">
+        <form id="signup" method="POST" novaidate>
           <div class="field">
             <label for="name">Full name</label>
-            <input type="text" id="name" name="entry.173314385" placeholder="Your name" required />
+            <input type="text" id="name" name="name" placeholder="Your name" required />
           </div>
           <div class="row">
             <div class="field">
               <label for="email">Email</label>
-              <input type="email" id="email" name="entry.513936409" placeholder="you@email.com" required />
+              <input type="email" id="email" name="email" placeholder="you@email.com" required />
             </div>
             <div class="field">
               <label for="whatsapp">WhatsApp <span style="color:#7e8a82;font-weight:400">(optional)</span></label>
-              <input type="tel" id="whatsapp" name="entry.1084263971" placeholder="+234…" />
+              <input type="tel" id="whatsapp" name="whatsapp" placeholder="+234…" />
             </div>
           </div>
           <div class="field">
             <label for="city">City</label>
-            <input type="text" id="city" name="entry.836616737" placeholder="e.g. Lagos" required />
+            <input type="text" id="city" name="city" placeholder="e.g. Lagos" required />
           </div>
           <div class="field">
             <label>I'm here to…</label>
             <div class="choice" id="intent" data-single="true">
+              <input type="hidden" name="intent" id="intent">
               <span class="chip" data-val="Build my own idea">Build my own idea</span>
               <span class="chip" data-val="Join someone's idea">Join someone's idea</span>
               <span class="chip" data-val="Both">Both</span>
@@ -315,14 +316,15 @@
           <div class="field">
             <label>Sectors I care about</label>
             <div class="choice" id="sectors"></div>
+            <input type="hidden" name="sectors" id="sector">
           </div>
           <div class="field">
             <label for="skills">My main skills</label>
-            <input type="text" id="skills" name="entry.576022684" placeholder="e.g. design, sales, coding, farming" required />
+            <input type="text" id="skills" name="skills" placeholder="e.g. design, sales, coding, farming" required />
           </div>
           <div class="field">
             <label for="oneline">In one line — the idea or problem I care about most</label>
-            <input type="text" id="oneline" name="entry.508964421" placeholder="What do you want to build?" required />
+            <input type="text" id="oneline" name="oneline" placeholder="What do you want to build?" required />
           </div>
           <button type="submit" class="btn btn-amber">Claim my founding spot</button>
           <p class="form-tiny">Two minutes. We'll reach out as we open the doors.</p>
@@ -441,6 +443,11 @@ function setupChips(containerId, single){
     };
   });
 }
+
+  //when someone clicks intent + sector
+// intent.value = selectedChip.dataset.val;
+// sector.value = selectedSectors.join(", ");
+  
 // build sector chips from the same sector list
 const sectorChips=document.getElementById('sectors');
 sectors.filter(s=>s!=="All").forEach(s=>{
@@ -454,31 +461,102 @@ setupChips('sectors', false);
    Paste your Formspree endpoint below, e.g.
    "https://formspree.io/f/abcdwxyz". Leave "" to just demo.
    ========================================================= */
-const FORM_ENDPOINT = "";
+// const FORM_ENDPOINT = "";
 
-const form=document.getElementById('signup');
-let founding = 17;
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const get=id=>document.getElementById(id).value.trim();
-  const sel=id=>[...document.getElementById(id).querySelectorAll('.chip.sel')].map(c=>c.dataset.val);
-  const data={
-    name:get('name'), email:get('email'), whatsapp:get('whatsapp'), city:get('city'),
-    intent:sel('intent')[0]||'', sectors:sel('sectors').join(', '),
-    skills:get('skills'), idea:get('oneline')
-  };
-  if(FORM_ENDPOINT){
-    try{ await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}); }
-    catch(err){ /* show success anyway so the user isn't blocked */ }
-  } else {
-    console.log('Signup captured (demo mode):', data);
-  }
-  founding++;
-  document.getElementById('successmsg').textContent =
-    `You're founding member #0${founding}. We'll reach out on WhatsApp or email as we open the doors.`;
-  form.style.display='none';
-  document.getElementById('success').classList.add('show');
-  document.getElementById('success').scrollIntoView({behavior:'smooth',block:'center'});
+// const form=document.getElementById('signup');
+// let founding = 17;
+// form.addEventListener('submit', async (e)=>{
+//   e.preventDefault();
+//   const get=id=>document.getElementById(id).value.trim();
+//   const sel=id=>[...document.getElementById(id).querySelectorAll('.chip.sel')].map(c=>c.dataset.val);
+//   const data={
+//     name:get('name'), email:get('email'), whatsapp:get('whatsapp'), city:get('city'),
+//     intent:sel('intent')[0]||'', sectors:sel('sectors').join(', '),
+//     skills:get('skills'), idea:get('oneline')
+//   };
+//   if(FORM_ENDPOINT){
+//     try{ await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}); }
+//     catch(err){ /* show success anyway so the user isn't blocked */ }
+//   } else {
+//     console.log('Signup captured (demo mode):', data);
+//   }
+//   founding++;
+//   document.getElementById('successmsg').textContent =
+//     `You're founding member #0${founding}. We'll reach out on WhatsApp or email as we open the doors.`;
+//   form.style.display='none';
+//   document.getElementById('success').classList.add('show');
+//   document.getElementById('success').scrollIntoView({behavior:'smooth',block:'center'});
+
+  const form = document.getElementById("signup");
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        whatsapp: document.getElementById("whatsapp").value,
+        city: document.getElementById("city").value,
+        intent: document.getElementById("intent").value,
+        sectors: document.getElementById("sector").value,
+        skills: document.getElementById("skills").value,
+        oneline: document.getElementById("oneline").value
+    };
+
+    try {
+
+        const response = await fetch(
+            "https://script.google.com/macros/s/AKfycbx4TAhEfTVUwcNjil8yS5CH38VxmTTjgxE1yOgbIWoGjT3wc-iHnrfx9XaBd4PdbZLIgQ/exec",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }
+        );
+
+        const result = await response.json();
+
+        if(result.success){
+
+            alert("Registration successful!");
+
+            form.reset();
+
+        }
+
+    } catch(error){
+
+        alert("Something went wrong.");
+
+        console.error(error);
+
+    }
+
+});
+
+const chips = document.querySelectorAll("#intent .chip");
+
+const hidden = document.getElementById("intent");
+
+chips.forEach(chip => {
+
+    chip.addEventListener("click", () => {
+
+        chips.forEach(c => c.classList.remove("active"));
+
+        chip.classList.add("active");
+
+        hidden.value = chip.dataset.val;
+
+    });
+
+});
+document.getElementById("sector").value =
+selectedSectors.join(", ");
+  
 });
 </script>
 </body>
